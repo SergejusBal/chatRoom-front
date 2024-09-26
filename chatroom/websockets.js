@@ -1,31 +1,82 @@
+// let message ={};
+// message.name = "jonas";
+// await connectUser();
+// stompClient.send("/app/chat", { 'Authorization': getCookie("JWT")}, JSON.stringify(message));
 
 
+import { setCookie, getCookie, deleteCookie } from '../Login_register/cookies.js';
+import { modifyUserCoitainer } from './chatroom.js';
 
 var stompClient = null;
 var url = "http://localhost:8080";
 
+
 export async function connectUser() {
-    return new Promise((resolve, reject) => {
+return new Promise((resolve, reject) => {
+    let JWT = getCookie("JWT");
 
-        var socket = new SockJS(url + '/websocket');
-        stompClient = Stomp.over(socket);
+    var socket = new SockJS(url + '/websocket?' + JWT);
+    stompClient = Stomp.over(socket);
 
-       
-        stompClient.connect({
-            Authorization: 'Bearer your_jwt_token_here'
-        }, function (frame) {
-            console.log('Connected: ' + frame);
+   
+    stompClient.connect({        
+    }, function (frame) {  
+        
+        stompClient.subscribe('/topic/name', function (message) {
 
-            
-            stompClient.subscribe('/topic/name', function () {
-                
-            });
+        modifyUserMeniu(message.body);
 
-            
-            resolve(frame);
-        }, function (error) {
-            console.log('Error: ' + error);                                
-            reject(error);
+        }, {
+            'Authorization': JWT
         });
+
+        stompClient.subscribe('/topic/chat', function (message) {       
+
+        }, {
+            'Authorization': JWT
+        });
+
+        
+        resolve(frame);
+    }, function (error) {
+        console.log('Error: ' + error);                                
+        reject(error);
     });
+});
+}
+
+export function sendNameNotification(){
+    stompClient.send("/app/name", { 'Authorization': getCookie("JWT")}, JSON.stringify({'name': getCookie("Name")}));
+}
+
+export function sendLoginNotification(){
+    stompClient.send("/app/chat", { 'Authorization': getCookie("JWT")}, JSON.stringify({'name': getCookie("Name"), "type":"SYSTEM"}));
+}
+
+export function sendMessage(message){
+    let messageBody = {};
+    messageBody.name = getCookie("Name");
+    messageBody.type = "REGULAR";
+    messageBody.localDateTime = getDate();    
+    messageBody.message = message;
+    stompClient.send("/app/chat", { 'Authorization': getCookie("JWT")}, JSON.stringify(messageBody));
+}
+
+
+
+function modifyUserMeniu(usersJSonString){
+    let names = JSON.parse(usersJSonString);      
+    modifyUserCoitainer(names);
+}
+
+
+function getDate(){
+    const now = new Date();
+    return now.getFullYear() + '-' +
+    ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+    ('0' + now.getDate()).slice(-2) + ' ' +
+    ('0' + now.getHours()).slice(-2) + ':' +
+    ('0' + now.getMinutes()).slice(-2) + ':' +
+    ('0' + now.getSeconds()).slice(-2);
+
 }
