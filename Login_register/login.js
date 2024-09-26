@@ -7,8 +7,9 @@ document.head.appendChild(link);
 
 import { setCookie, getCookie, deleteCookie } from './cookies.js';
 import { createRegisterContainer} from './register.js';
+import { createChatRoom } from '../chatroom/chatroom.js';
 
-export function createLoginContainer(containerID){
+export async function createLoginContainer(containerID){
 
     const main_containter = document.getElementById(containerID);
     main_containter.innerHTML = "";
@@ -32,8 +33,8 @@ export function createLoginContainer(containerID){
             const usernameInput = document.createElement('input');
             usernameInput.type = "text";
             usernameInput.id = "username";
-            usernameInput.name = "username";
-            usernameInput.required = true;
+            usernameInput.name = "username";            
+            
 
         usernameForm.appendChild(usernameLabel);
         usernameForm.appendChild(usernameInput);
@@ -51,7 +52,7 @@ export function createLoginContainer(containerID){
             passwordInput.type = "password";
             passwordInput.id = "password";
             passwordInput.name = "password";
-            passwordInput.required = true;
+            
 
         passwordForm.appendChild(passwordLabel);
         passwordForm.appendChild(passwordInput);
@@ -66,8 +67,9 @@ export function createLoginContainer(containerID){
         loginButton.textContent = "Login";
         loginButton.onclick = async function(){
             let user = getUserData();            
-            if(await login(user)) document.getElementById("errorMessage").innerHTML  = "Login successful";
-           // else document.getElementById("errorMessage").innerHTML  = "Login is not successful";
+            if(await login(user)) {
+                createChatRoom("main-container");
+
         }
 
         loginButtonDiv.appendChild(loginButton);
@@ -94,9 +96,12 @@ export function createLoginContainer(containerID){
 
     loginDiv.appendChild(errorMessage);
 
-    main_containter.appendChild(loginDiv);    
-   
+    main_containter.appendChild(loginDiv);
+    
+    let autoLoginFlag = await autologin();   
+    if(autoLoginFlag) createChatRoom("main-container");
 
+   
 }
 
 
@@ -131,7 +136,8 @@ async function login(user) {
             return;
         }
         if (response.status == 200) {            
-            setCookie("JWT", await response.text(),7);             
+            setCookie("JWT", await response.text(),7);
+            setCookie("Name", user.name);           
             return true;
         }  
 
