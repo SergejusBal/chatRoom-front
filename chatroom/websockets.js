@@ -38,6 +38,12 @@ return new Promise((resolve, reject) => {
             'Authorization': JWT
         });
 
+        stompClient.subscribe('/user/topic/oldMessages', function (message) {       
+            loadOldMessages(message.body);
+            }, {
+                'Authorization': JWT
+            });
+
         
         resolve(frame);
     }, function (error) {
@@ -64,6 +70,10 @@ export function sendMessage(message){
     stompClient.send("/app/chat", { 'Authorization': getCookie("JWT")}, JSON.stringify(messageBody));
 }
 
+export function getOldMessages(){
+    stompClient.send("/app/oldMessages", { 'Authorization': getCookie("JWT")}, {});
+}
+
 
 function modifyUserMeniu(usersJSonString){
     let names = JSON.parse(usersJSonString);      
@@ -78,6 +88,14 @@ function modifyChatWindow(messageJSonString){
     if(message.type == "SYSTEM") createPopUp("message-container",message.message);
     else if (message.type == "REGULAR") writeAComment("message-container", message, shifted);
 
+}
+
+function loadOldMessages(oldMessageJSonStrings){
+    let messages = JSON.parse(oldMessageJSonStrings); 
+    messages.forEach(message => {
+        let shifted = message.name == getCookie("Name");
+        writeAComment("message-container", message, shifted)
+    });
 }
 
 
