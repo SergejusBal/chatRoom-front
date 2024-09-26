@@ -6,6 +6,7 @@
 
 import { setCookie, getCookie, deleteCookie } from '../Login_register/cookies.js';
 import { modifyUserCoitainer } from './chatroom.js';
+import { writeAComment } from './comment.js';
 
 var stompClient = null;
 var url = "http://localhost:8080";
@@ -31,7 +32,7 @@ return new Promise((resolve, reject) => {
         });
 
         stompClient.subscribe('/topic/chat', function (message) {       
-
+        modifyChatWindow(message.body);
         }, {
             'Authorization': JWT
         });
@@ -63,10 +64,19 @@ export function sendMessage(message){
 }
 
 
-
 function modifyUserMeniu(usersJSonString){
     let names = JSON.parse(usersJSonString);      
     modifyUserCoitainer(names);
+}
+
+function modifyChatWindow(messageJSonString){
+
+    let message = JSON.parse(messageJSonString); 
+    let shifted = message.name == getCookie("Name");
+
+    if(message.type == "SYSTEM") ;
+    else if (message.type == "REGULAR") writeAComment("message-container", message, shifted);
+
 }
 
 

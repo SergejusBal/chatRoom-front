@@ -15,7 +15,7 @@
     border-bottom-left-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 1);
     height: 100%;
-    width: 15%;
+    width: 20%;
     z-index: 1;
 
 }
@@ -113,10 +113,13 @@
 
 }
 
-.message-container{
-    background-color: rgb(236, 247, 248);
+.message-container{  
+    display: flex;
+    flex-direction: column;
+    justify-content:end;
+    overflow-y: auto;    
     border-radius: 10px;
-    width: 90%;
+    width: 80%;
     height: 90%;
 }
 

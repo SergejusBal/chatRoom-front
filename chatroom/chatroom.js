@@ -60,6 +60,7 @@ export async function createChatRoom(containerID){
 
             const messageContainerDiv = document.createElement('div');
             messageContainerDiv.className = "message-container";
+            messageContainerDiv.id = "message-container";
 
             const messageCreationPanel = document.createElement('div');
             messageCreationPanel.className = "messageCreation-panel";
@@ -72,8 +73,9 @@ export async function createChatRoom(containerID){
                 sendMessageButton.id = "sendMessage";
                 sendMessageButton.textContent = "Send";
                 sendMessageButton.onclick = async function(){
-                    deleteCookie("JWT");
-                    createLoginContainer(containerID);
+                    let message = document.getElementById("sendMessageInput").value;
+                    sendMessage(message);    
+                    document.getElementById("sendMessageInput").value = "";               
                 }
             
             messageCreationPanel.appendChild(sendMessagetextArea);    
@@ -89,8 +91,7 @@ export async function createChatRoom(containerID){
     
     await connectUser(); 
     sendNameNotification();   
-    sendLoginNotification();
-    sendMessage("test1");
+    sendLoginNotification();    
 }
 
 
