@@ -9,6 +9,7 @@ import { setCookie, getCookie, deleteCookie } from './cookies.js';
 import { createRegisterContainer} from './register.js';
 import { createChatRoom } from '../chatroom/chatroom.js';
 
+
 export async function createLoginContainer(containerID){
 
     const main_containter = document.getElementById(containerID);
@@ -68,8 +69,8 @@ export async function createLoginContainer(containerID){
         loginButton.onclick = async function(){
             let user = getUserData();            
             if(await login(user)) {
-                createChatRoom("main-container");
-
+                createChatRoom("main-container");                
+            }
         }
 
         loginButtonDiv.appendChild(loginButton);
@@ -188,5 +189,4 @@ function clearUserData(){
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
 }
-
 

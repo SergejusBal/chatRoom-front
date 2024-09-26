@@ -7,9 +7,10 @@ document.head.appendChild(link);
 
 import { setCookie, getCookie, deleteCookie } from '../Login_register/cookies.js';
 import { createLoginContainer } from '../Login_register/login.js';
+import { connectUser, sendNameNotification, sendLoginNotification, sendMessage } from './websockets.js';
 
 
-export function createChatRoom(containerID){
+export async function createChatRoom(containerID){
 
     const main_containter = document.getElementById(containerID);
     main_containter.innerHTML = "";
@@ -59,6 +60,7 @@ export function createChatRoom(containerID){
 
             const messageContainerDiv = document.createElement('div');
             messageContainerDiv.className = "message-container";
+            messageContainerDiv.id = "message-container";
 
             const messageCreationPanel = document.createElement('div');
             messageCreationPanel.className = "messageCreation-panel";
@@ -71,8 +73,9 @@ export function createChatRoom(containerID){
                 sendMessageButton.id = "sendMessage";
                 sendMessageButton.textContent = "Send";
                 sendMessageButton.onclick = async function(){
-                    deleteCookie("JWT");
-                    createLoginContainer(containerID);
+                    let message = document.getElementById("sendMessageInput").value;
+                    sendMessage(message);    
+                    document.getElementById("sendMessageInput").value = "";               
                 }
             
             messageCreationPanel.appendChild(sendMessagetextArea);    
@@ -84,32 +87,33 @@ export function createChatRoom(containerID){
 
 
     chatroom.appendChild(messagePanelDiv);
-    main_containter.appendChild(chatroom); 
-
+    main_containter.appendChild(chatroom);   
     
+    await connectUser(); 
+    sendNameNotification();   
+    sendLoginNotification();    
 }
 
 
-function addUser(containerID,name){
+export async function modifyUserCoitainer(names){
 
-    const user_containter = document.getElementById(containerID);
+    const user_containter = document.getElementById("user-container");
+    user_containter.innerHTML = "";
 
-    if(document.getElementById("User" + name) != null){
-        document.getElementById("User" + name).style.display = "flex";
-    }else{
+    names.forEach(name => {
+        
+            const userNameDiv = document.createElement('div');
+            userNameDiv.className = "userNameDiv-container";
+            userNameDiv.id = "User" + name;
 
-        const userNameDiv = document.createElement('div');
-        userNameDiv.className = "userNameDiv-container";
-        userNameDiv.id = "User" + name;
+                const userLabel = document.createElement('label');
+                userLabel.textContent = name;
 
-            const userLabel = document.createElement('label');
-            userLabel.textContent = name;
+            userNameDiv.appendChild(userLabel);
 
-        userNameDiv.appendChild(userLabel);
+            user_containter.appendChild(userNameDiv);
 
-        user_containter.appendChild(userNameDiv);
-
-    }
+        });
 
 
 }
