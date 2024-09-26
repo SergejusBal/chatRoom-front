@@ -7,6 +7,7 @@
 import { setCookie, getCookie, deleteCookie } from '../Login_register/cookies.js';
 import { modifyUserCoitainer } from './chatroom.js';
 import { writeAComment } from './comment.js';
+import { createPopUp } from './popup.js';
 
 var stompClient = null;
 var url = "http://localhost:8080";
@@ -74,7 +75,7 @@ function modifyChatWindow(messageJSonString){
     let message = JSON.parse(messageJSonString); 
     let shifted = message.name == getCookie("Name");
 
-    if(message.type == "SYSTEM") ;
+    if(message.type == "SYSTEM") createPopUp("message-container",message.message);
     else if (message.type == "REGULAR") writeAComment("message-container", message, shifted);
 
 }
