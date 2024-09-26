@@ -7,7 +7,7 @@ document.head.appendChild(link);
 
 import { setCookie, getCookie, deleteCookie } from '../Login_register/cookies.js';
 import { createLoginContainer } from '../Login_register/login.js';
-import { connectUser, sendNameNotification, sendLoginNotification, sendMessage } from './websockets.js';
+import { connectUser, sendNameNotification, sendLoginNotification, sendMessage, getOldMessages } from './websockets.js';
 
 
 export async function createChatRoom(containerID){
@@ -92,6 +92,7 @@ export async function createChatRoom(containerID){
     await connectUser(); 
     sendNameNotification();   
     sendLoginNotification();    
+    getOldMessages();
 }
 
 

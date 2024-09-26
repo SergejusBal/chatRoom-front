@@ -33,7 +33,7 @@ async function addCommenbt(comment, shifted) {
                 nameLabel.textContent = comment.name;
                 const timeLabel = document.createElement("label"); 
                 timeLabel.style.textAlign = "right";
-                timeLabel.textContent = comment.localDateTime;               
+                timeLabel.textContent = comment.localDateTime.replace("T", " ");               
             
             infoDiv.appendChild(nameLabel);
             infoDiv.appendChild(timeLabel);
@@ -46,5 +46,11 @@ async function addCommenbt(comment, shifted) {
         commentDiv.appendChild(commentLabel);
 
     commentCointainer.appendChild(commentDiv);
+    scrollToBottom();
     
 } 
+
+function scrollToBottom() {
+    var container = document.getElementById('commentCointainer'); 
+    container.scrollTop = container.scrollHeight;  
+}
