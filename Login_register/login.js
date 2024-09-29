@@ -138,7 +138,7 @@ async function login(user) {
         }
         if (response.status == 200) {            
             setCookie("JWT", await response.text(),7);
-            setCookie("Name", user.name);           
+            setCookie("Name", user.name, 7);           
             return true;
         }  
 
