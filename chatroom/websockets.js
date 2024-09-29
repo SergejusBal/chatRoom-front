@@ -109,3 +109,9 @@ function getDate(){
     ('0' + now.getSeconds()).slice(-2);
 
 }
+
+export function disconnect() {
+    if (stompClient !== null) {
+        stompClient.disconnect();
+    }
+}
